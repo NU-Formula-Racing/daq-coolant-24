@@ -1,3 +1,3 @@
-# daq-firmware-base-24
+# daq-coolant-24
 
 **Checkout some learning resources [here!](./RESOURCES.md)**
