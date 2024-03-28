@@ -22,7 +22,7 @@ class TempSensor {
 
     // Electrical properties
     float m_R0;
-    float mVCC = 3.3;
+    float m_VCC = 3.3;
     int m_ThermoPlusPin;
 
   public:
