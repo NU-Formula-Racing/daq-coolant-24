@@ -14,19 +14,16 @@ FlowRateSensor::FlowRateSensor(int signalPin, float factor) {
 // Returns the reading of the sensor in litres / second
 //
 float FlowRateSensor::Read() {
-  unsigned long readTime = millis();
-
-  float readTimeInterval = (float) (readTime - m_LastReadTime) / 1000;
-
-  m_LastReadTime = readTime;
-
-  if (readTimeInterval < 10e-3)
+  unsigned long readTimeInterval = millis() - m_LastReadTime;
+  
+  if (readTimeInterval< 1000)
     return m_LastReadValue;
 
-  float flowRate = (m_Count / readTimeInterval) * m_CalibrationFactor;
-
+  // The unit of flowRate is mL / s
+  float flowRate = (m_Count * m_CalibrationFactor / readTimeInterval) * 1000;
+  
   m_Count = 0;
-  m_LastReadValue = flowRate;
+  m_LastReadTime = millis();
 
   return flowRate;
 }
