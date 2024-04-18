@@ -14,8 +14,8 @@ ESPCAN CANBus;
 const uint16_t COOLANT_ADDR = {0x420};
 
 // Signals
-CANSignal<float, 32, 16, CANTemplateConvertFloat(0.1), CANTemplateConvertFloat(-40), false> tempSignal {};
-CANSignal<float, 0, 16, CANTemplateConvertFloat(1), CANTemplateConvertFloat(0), false> flowSignal {};
+CANSignal<float, 0, 32, CANTemplateConvertFloat(0.1), CANTemplateConvertFloat(-40), false> tempSignal {};
+CANSignal<float, 32, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(0), false> flowSignal {};
 
 // Messages
 CANTXMessage<1> tempMessage{CANBus, COOLANT_ADDR, 1, 100, sensorReadTimerGroup, tempSignal};
