@@ -11,15 +11,16 @@ VirtualTimerGroup sensorReadTimerGroup;
 ESPCAN CANBus;
 
 // Addresses
-const uint16_t COOLANT_ADDR = {0x420};
+const uint16_t COOLANT_TEMP_ADDR = {0X420};
+const uint16_t COOLANT_FLOW_ADDR = {0x421};
 
 // Signals
-CANSignal<float, 0, 32, CANTemplateConvertFloat(0.1), CANTemplateConvertFloat(-40), false> tempSignal {};
+CANSignal<float, 0, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(-40), false> tempSignal {};
 CANSignal<float, 32, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(0), false> flowSignal {};
 
 // Messages
-CANTXMessage<1> tempMessage{CANBus, COOLANT_ADDR, 1, 100, sensorReadTimerGroup, tempSignal};
-CANTXMessage<1> flowMessage{CANBus, COOLANT_ADDR, 1, 100, sensorReadTimerGroup, flowSignal};
+CANTXMessage<1> tempMessage{CANBus, COOLANT_TEMP_ADDR, 1, 100, sensorReadTimerGroup, tempSignal};
+CANTXMessage<1> flowMessage{CANBus, COOLANT_FLOW_ADDR, 1, 500, sensorReadTimerGroup, flowSignal};
 
 // Define Hardware Pins
 const int CAN_TX_PIN = 32;

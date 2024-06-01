@@ -11,7 +11,7 @@ FlowRateSensor::FlowRateSensor(int signalPin, float factor) {
 }
 
 //
-// Returns the reading of the sensor in litres / second
+// Returns the reading of the sensor in litres
 //
 float FlowRateSensor::Read() {
   unsigned long readTimeInterval = millis() - m_LastReadTime;
