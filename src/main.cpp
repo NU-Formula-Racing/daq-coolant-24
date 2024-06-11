@@ -15,8 +15,8 @@ const uint16_t COOLANT_TEMP_ADDR = {0X420};
 const uint16_t COOLANT_FLOW_ADDR = {0x421};
 
 // Signals
-CANSignal<float, 0, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(-40), false> tempSignal {};
-CANSignal<float, 32, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(0), false> flowSignal {};
+CANSignal<float, 0, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(-40), false> tempSignal{};
+CANSignal<float, 32, 32, CANTemplateConvertFloat(1), CANTemplateConvertFloat(0), false> flowSignal{};
 
 // Messages
 CANTXMessage<1> tempMessage{CANBus, COOLANT_TEMP_ADDR, 1, 100, sensorReadTimerGroup, tempSignal};
@@ -29,7 +29,7 @@ const int TEMP_SENSOR_POS_PIN = 33;
 const int FLOW_RATE_SIGNAL_PIN = 14;
 
 // Define Steinhart-Hart Coefficients
-const float A = 1.421600903e-3; 
+const float A = 1.421600903e-3;
 const float B = 2.365057386e-4;
 const float C = 1.051300115e-7;
 
@@ -38,33 +38,46 @@ TempSensor tempSensor(A, B, C, TEMP_SENSOR_POS_PIN, 20000);
 FlowRateSensor flowSensor(FLOW_RATE_SIGNAL_PIN, 3.0);
 
 // Update Temperature Signal
-void updateTempSignal() {
-  // tempSignal = tempSensor.Read();
-  tempSignal = 40.0;
+void updateTempSignal()
+{
+    tempSignal = tempSensor.Read();
+    // tempSignal = 40.0;
 }
 
 // Update Flow Rate Signal
-void updateFlowRateSignal() {
-  // flowSignal = flowSensor.Read();
-  flowSignal = 15.0;
+void updateFlowRateSignal()
+{
+    flowSignal = flowSensor.Read();
+    // flowSignal = 15.0;
 }
 
-void setup() {
-  // Serial Monitor
-  Serial.begin(9600);
-  
-  // Initialize CAN Bus
-  CANBus.Initialize(ICAN::BaudRate::kBaud1M);
-
-  // Setup Timers
-  sensorReadTimerGroup.AddTimer(100, updateTempSignal);
-  sensorReadTimerGroup.AddTimer(500, updateFlowRateSignal); 
+void printValues()
+{
+    tempSensor.Print();
+    flowSensor.Print();
 }
 
-void loop() {
-  sensorReadTimerGroup.Tick(millis());
+void setup()
+{
+    // Serial Monitor
+    Serial.begin(9600);
 
-  tempSensor.Print();
-  // Serial.printf("Flow Rate: %3f mL/s", flowSensor.Read());
-  delay(1000);
+    // Initialize CAN Bus
+    CANBus.Initialize(ICAN::BaudRate::kBaud1M);
+
+    // Setup Timers
+    sensorReadTimerGroup.AddTimer(100, updateTempSignal);
+    sensorReadTimerGroup.AddTimer(500, updateFlowRateSignal);
+    sensorReadTimerGroup.AddTimer(1000, printValues);
+
+    // Set up interrupt for flow rate sensor
+    pinMode(FLOW_RATE_SIGNAL_PIN, INPUT);
+    attachInterrupt(digitalPinToInterrupt(FLOW_RATE_SIGNAL_PIN), []()
+                    { flowSensor.IncrementCount(); }, RISING);
+}
+
+void loop()
+{
+    sensorReadTimerGroup.Tick(millis());
+    // Serial.printf("Flow Rate: %3f mL/s", flowSensor.Read());
 }

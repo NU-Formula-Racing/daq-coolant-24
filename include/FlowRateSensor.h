@@ -15,8 +15,9 @@
 
 #pragma once
 
-class FlowRateSensor {
-  private:
+class FlowRateSensor
+{
+private:
     // Electrical properties
     float m_CalibrationFactor;
     int m_FlowSignalPin;
@@ -26,7 +27,7 @@ class FlowRateSensor {
     unsigned long m_LastReadTime;
     float m_LastReadValue;
 
-  public:
+public:
     //
     // Constructor
     //
@@ -42,8 +43,7 @@ class FlowRateSensor {
     //
     void Print() const;
 
-  private:
-    // 
+    //
     // Interrupt handler to increment PWM count
     //
     void IncrementCount();
